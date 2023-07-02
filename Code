@@ -1,0 +1,20 @@
+class Solution: #beats 95.22% runtime, 8.82% Memory 
+    def distributeCookies(self, cookies: List[int], k: int) -> int:
+        lowestMax = sum(cookies)
+        cookies.sort(reverse = True)
+        @cache
+        def recursiveDistribute(kids, batch):
+            nonlocal lowestMax
+            if batch == len(cookies):
+                lowestMax = min(lowestMax, kids[0])
+                return
+            for i in reversed(range(k)):
+                temp = list(kids)
+                temp[i] += cookies[batch]
+                if temp[i] >= lowestMax:
+                    continue
+                temp.sort(reverse = True)
+                recursiveDistribute(tuple(temp), batch+1)
+            return
+        recursiveDistribute(tuple([0] * k), 0)
+        return lowestMax
